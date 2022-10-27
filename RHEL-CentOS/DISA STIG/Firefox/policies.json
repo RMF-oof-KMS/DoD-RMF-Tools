@@ -1,0 +1,98 @@
+{
+  "policies": {
+    "EnableTrackingProtection": {
+      "Fingerprinting": true
+    },
+    "SanitizeOnShutdown": {
+      "Cache": false,
+      "Cookies": false,
+      "Downloads": false,
+      "FormData": false,
+      "History": false,
+      "Sessions": false,
+      "SiteSettings": false,
+      "OfflineApps": false,
+      "Locked": true
+    },
+    "FirefoxHome": {
+      "Search": false,
+      "TopSites": false,
+      "SponsoredTopSites": false,
+      "Pocket": false,
+      "SponsoredPocket": false,
+      "Highlights": false,
+      "Snippets": false,
+      "locked": true
+    },
+    "Permissions": {
+      "Autoplay": {
+        "Default": "block-audio-video"
+      }
+    },
+    "Preferences": {
+      "dom.disable_window_flip": {
+        "Value": true,
+        "Status": "locked"
+      },
+      "dom.disable_window_move_resize": {
+        "Value": true,
+        "Status": "locked"
+      },
+      "extensions.htmlaboutaddons.recommendations.enabled": {
+        "Value": false,
+        "Status": "locked"
+      },
+      "security.default_personal_cert": {
+        "Value": "Ask Every Time",
+        "Status": "locked"
+      },
+      "browser.contentblocking.category": {
+        "Value": "strict",
+        "Status": "locked"
+      },
+      "browser.search.update": {
+        "Value": false,
+        "Status": "locked"
+      }
+    },
+    "InstallAddonsPermission": {
+      "Default": false
+    },
+    "PopupBlocking": {
+      "Allow": ["http://example.mil/",
+      "http://example.gov/"],
+      "Default": true,
+      "Locked": true
+    },
+    "DNSOverHTTPS": {
+      "Enabled": false
+    },
+    "UserMessaging": {
+      "ExtensionRecommendations": false
+    },
+    "DisabledCiphers": {
+      "TLS_RSA_WITH_3DES_EDE_CBC_SHA": true
+    },
+    "EncryptedMediaExtensions": {
+      "Enabled": false,
+      "Locked": true
+    },
+    "EnableTrackingProtection": {
+      "Cryptomining": true
+    },
+    "DisableDeveloperTools": true,
+    "DisableFeedbackCommands": true,
+    "DisableFirefoxAccounts": true,
+    "DisableFirefoxStudies": true,
+    "DisableForgetButton": true,
+    "DisableFormHistory": true,
+    "DisablePocket": true,
+    "DisablePrivateBrowsing": true,
+    "DisableTelemetry": true,
+    "ExtensionUpdate": false,
+    "NetworkPrediction": false,
+    "PasswordManagerEnabled": false,
+    "SearchSuggestEnabled": false,
+    "SSLVersionMin": "tls1.3"
+  }
+}

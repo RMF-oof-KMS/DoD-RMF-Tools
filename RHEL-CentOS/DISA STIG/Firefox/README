@@ -1,0 +1,2 @@
+Move the policies.json file to /usr/lib64/firefox/distribution directory.
+For snap Firefox installations, move to /etc/firefox/policies directory.

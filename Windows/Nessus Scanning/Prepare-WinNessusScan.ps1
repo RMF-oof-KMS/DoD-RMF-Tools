@@ -1,5 +1,5 @@
 # Check if LocalAccountTokenFilterPolicy exists, and create it if it doesn't
-if (-not (Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\LocalAccountTokenFilterPolicy")) {
+if (-not (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "LocalAccountTokenFilterPolicy" -ErrorAction SilentlyContinue)) {
     New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "LocalAccountTokenFilterPolicy" -PropertyType DWORD -Value 0
     echo "LocalAccountTokenFilterPolicy did not exist. Created and set to 0 (disabled)."
 }

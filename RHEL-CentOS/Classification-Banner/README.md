@@ -1,0 +1,1 @@
+This was created to customize banner locations for RHEL 7 w GUI systems with up to two monitors. BANNER_CONFIG['positions'] in the configuration file allows you to choose if you want the banner on the top or the bottom. The software will not allow you to put the banner on the top and bottom of the same display. Using the setup.sh file blindly will not harm your systems.

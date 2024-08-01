@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Classification Banner
+Exec=/usr/bin/python2 /usr/local/sbin/classification-banner.py
+Comment=Spawn Classification Banner
+StartupNotify=false
+Terminal=false
+X-GNOME-Autostart-enabled=true
+
+# Execution file is /usr/local/sbin/classification-banner.py
+# Configuration file is /etc/classificaiton-banner.conf
+# Initiation file is /etc/xdg/autostart/classification-banner.desktop

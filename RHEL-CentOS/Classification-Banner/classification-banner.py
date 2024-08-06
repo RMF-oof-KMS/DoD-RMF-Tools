@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+# Execution file is /usr/local/sbin/classification-banner.py
+# Configuration file is /etc/classificaiton-banner.conf
+# Service file is /etc/systemd/system/classification-banner.service
+
 import pygtk
 pygtk.require('2.0')
 import gtk

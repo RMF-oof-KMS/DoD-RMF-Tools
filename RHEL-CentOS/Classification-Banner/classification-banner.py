@@ -7,13 +7,16 @@ import gobject
 import imp
 
 class ClassificationBanner:
-    def __init__(self, message="SECRET", bgcolor="#C8102E", height=20, font_size="medium", positions=["top", "top"]):
+    def __init__(self, message="SECRET", bgcolor="#C8102E", height=20, font_size="medium", positions=["top", "top", "top", "top"]):
         # Store configuration parameters
         self.banner_message = message
         self.banner_color = bgcolor
         self.banner_height = height
         self.banner_font_size = font_size
         self.banner_positions = positions
+        
+        # Ensure we have 4 position settings (use 'top' as default if not specified)
+        self.banner_positions = (self.banner_positions + ['top'] * 4)[:4]
         
         # List to store banner windows
         self.banner_windows = []
@@ -25,11 +28,11 @@ class ClassificationBanner:
         gobject.timeout_add(1000, self.ensure_banner_visibility)
     
     def create_banner_windows(self):
-        """Create classification banner windows for each monitor"""
+        """Create classification banner windows for each monitor (up to 4)"""
         screen = gtk.gdk.screen_get_default()
-        num_monitors = screen.get_n_monitors()
+        num_monitors = min(screen.get_n_monitors(), 4)  # Limit to 4 monitors
         
-        for monitor_index in range(min(num_monitors, len(self.banner_positions))):
+        for monitor_index in range(num_monitors):
             # Create a new window for each monitor
             banner_window = self.create_single_banner_window(screen, monitor_index)
             self.banner_windows.append(banner_window)

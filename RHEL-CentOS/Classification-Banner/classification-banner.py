@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 import pygtk
 pygtk.require('2.0')
 import gtk
@@ -9,7 +8,7 @@ import imp
 class ClassificationBanner:
     def __init__(self, message="SECRET", bgcolor="#C8102E", height=20, font_size="medium", positions=["top", "top"]):
         self.windows = []
-        screen = gtk.gdk.Screen()
+        screen = gtk.gdk.screen_get_default()
         
         num_monitors = screen.get_n_monitors()
         if num_monitors == 1:
@@ -26,8 +25,8 @@ class ClassificationBanner:
             window.set_skip_taskbar_hint(True)
             window.set_skip_pager_hint(True)
             
-            # Use a normal window type, but set it to always be on top
-            window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_NORMAL)
+            # Set window type to dock to make it visible on all workspaces
+            window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DOCK)
             window.set_keep_above(True)
             
             window.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(bgcolor))
@@ -44,8 +43,19 @@ class ClassificationBanner:
             else:
                 window.move(monitor_geometry.x, monitor_geometry.y)
             
+            # Make the window appear on all workspaces
+            window.stick()
+            
             window.show_all()
             self.windows.append(window)
+        
+        # Connect to workspace-changed signal
+        screen.connect("active-workspace-changed", self.on_workspace_changed)
+    
+    def on_workspace_changed(self, screen, previously_active_space):
+        # Ensure windows are visible and on top when workspace changes
+        for window in self.windows:
+            window.present()
 
 def load_config(config_file):
     try:
@@ -62,8 +72,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-# Execution file is /usr/local/sbin/classification-banner.py
-# Configuration file is /etc/classificaiton-banner.conf
-# Initiation file is /etc/xdg/autostart/classification-banner.desktop

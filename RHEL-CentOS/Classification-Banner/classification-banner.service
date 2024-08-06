@@ -1,0 +1,12 @@
+[Unit]
+Description=Classification Banner
+After=display-manager.service
+
+[Service]
+ExecStart=/usr/bin/python2 /usr/local/sbin/classification-banner.py
+Restart=always
+User=root
+Environment=DISPLAY=:0
+
+[Install]
+WantedBy=multi-user.target

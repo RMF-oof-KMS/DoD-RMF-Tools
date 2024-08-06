@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 import pygtk
 pygtk.require('2.0')
 import gtk
@@ -7,66 +8,90 @@ import imp
 
 class ClassificationBanner:
     def __init__(self, message="SECRET", bgcolor="#C8102E", height=20, font_size="medium", positions=["top", "top"]):
-        self.windows = []
-        screen = gtk.gdk.screen_get_default()
+        # Store configuration parameters
+        self.banner_message = message
+        self.banner_color = bgcolor
+        self.banner_height = height
+        self.banner_font_size = font_size
+        self.banner_positions = positions
         
-        num_monitors = screen.get_n_monitors()
-        if num_monitors == 1:
-            print("Single monitor detected. Using only the first position setting.")
+        # List to store banner windows
+        self.banner_windows = []
         
-        for i in range(min(num_monitors, 2)):  # Support up to 2 monitors
-            window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-            window.set_position(gtk.WIN_POS_NONE)
-            window.set_decorated(False)
-            window.set_keep_above(True)
-            window.set_app_paintable(True)
-            
-            # Prevent taskbar entry
-            window.set_skip_taskbar_hint(True)
-            window.set_skip_pager_hint(True)
-            
-            # Set window type to dock to make it visible on all workspaces
-            window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DOCK)
-            window.set_keep_above(True)
-            
-            window.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(bgcolor))
-            
-            label = gtk.Label()
-            label.set_markup("<span foreground='#FFFFFF' size='%s' weight='bold'>%s</span>" % (font_size, message))
-            window.add(label)
-            
-            monitor_geometry = screen.get_monitor_geometry(i)
-            window.set_default_size(monitor_geometry.width, height)
-            
-            if positions[i] == "bottom":
-                window.move(monitor_geometry.x, monitor_geometry.y + monitor_geometry.height - height)
-            else:
-                window.move(monitor_geometry.x, monitor_geometry.y)
-            
-            # Make the window appear on all workspaces
-            window.stick()
-            
-            window.show_all()
-            self.windows.append(window)
+        # Create banner windows
+        self.create_banner_windows()
         
-        # Connect to workspace-changed signal
-        screen.connect("active-workspace-changed", self.on_workspace_changed)
+        # Set up a timer to periodically check and update windows
+        gobject.timeout_add(1000, self.ensure_banner_visibility)
     
-    def on_workspace_changed(self, screen, previously_active_space):
-        # Ensure windows are visible and on top when workspace changes
-        for window in self.windows:
+    def create_banner_windows(self):
+        """Create classification banner windows for each monitor"""
+        screen = gtk.gdk.screen_get_default()
+        num_monitors = screen.get_n_monitors()
+        
+        for monitor_index in range(min(num_monitors, len(self.banner_positions))):
+            # Create a new window for each monitor
+            banner_window = self.create_single_banner_window(screen, monitor_index)
+            self.banner_windows.append(banner_window)
+    
+    def create_single_banner_window(self, screen, monitor_index):
+        """Create a single banner window for a specific monitor"""
+        window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+        window.set_decorated(False)
+        window.set_keep_above(True)
+        window.set_skip_taskbar_hint(True)
+        window.set_skip_pager_hint(True)
+        
+        # Set the background color
+        window.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(self.banner_color))
+        
+        # Create and add the label
+        label = gtk.Label()
+        label.set_markup("<span foreground='#FFFFFF' size='%s' weight='bold'>%s</span>" % 
+                         (self.banner_font_size, self.banner_message))
+        window.add(label)
+        
+        # Position the window on the correct monitor
+        self.position_window(window, screen, monitor_index)
+        
+        # Attempt to make the window stick to all workspaces
+        window.stick()
+        
+        window.show_all()
+        return window
+    
+    def position_window(self, window, screen, monitor_index):
+        """Position the banner window on the specified monitor"""
+        monitor_geometry = screen.get_monitor_geometry(monitor_index)
+        window.set_default_size(monitor_geometry.width, self.banner_height)
+        
+        if self.banner_positions[monitor_index] == "bottom":
+            y_position = monitor_geometry.y + monitor_geometry.height - self.banner_height
+        else:
+            y_position = monitor_geometry.y
+        
+        window.move(monitor_geometry.x, y_position)
+    
+    def ensure_banner_visibility(self):
+        """Ensure all banner windows are visible and on top"""
+        for window in self.banner_windows:
             window.present()
+        return True  # Keep the timer running
 
-def load_config(config_file):
+def load_banner_config(config_file_path):
+    """Load banner configuration from a file"""
     try:
-        config = imp.load_source('config', config_file)
-        return config.BANNER_CONFIG
+        config_module = imp.load_source('config', config_file_path)
+        return config_module.BANNER_CONFIG
     except Exception as e:
         print("Error loading config file: %s" % str(e))
         return {}
 
 def main():
-    config = load_config('/etc/classification-banner.conf')
+    # Load configuration
+    config = load_banner_config('/etc/classification-banner.conf')
+    
+    # Create and run the classification banner
     banner = ClassificationBanner(**config)
     gtk.main()
 
